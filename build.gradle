@@ -1,0 +1,81 @@
+plugins {
+    id 'java'
+    id 'com.google.protobuf' version '0.8.10' // https://github.com/google/protobuf-gradle-plugin/releases
+    id 'de.undercouch.download' version '4.0.2' //https://plugins.gradle.org/plugin/de.undercouch.download
+}
+
+group = 'com.zemrow.test.grpc'
+sourceCompatibility = 1.8
+setTargetCompatibility(org.gradle.api.JavaVersion.VERSION_1_8)
+compileJava.options.encoding = 'UTF-8'
+
+def grpcVersion = '1.29.0' // https://mvnrepository.com/artifact/io.grpc/grpc-stub
+def protobufVersion = '3.11.4' // https://mvnrepository.com/artifact/com.google.protobuf/protoc
+def grpcWebVersion = '1.0.7' // https://github.com/grpc/grpc-web/releases
+
+repositories {
+    mavenLocal()
+    mavenCentral()
+    jcenter()
+}
+
+dependencies {
+    compile group: 'io.grpc', name: 'grpc-protobuf', version: grpcVersion
+    compile group: 'io.grpc', name: 'grpc-stub', version: grpcVersion
+    compile group: 'io.grpc', name: 'grpc-netty', version: grpcVersion
+}
+
+// https://github.com/google/protobuf-gradle-plugin/issues/338
+// https://github.com/google/protobuf-gradle-plugin
+// protoc --proto_path=todo --js_out=import_style=commonjs,binary:todo-client/src/ --grpc-web_out=import_style=commonjs,mode=grpcwebtext:todo-client/src/ todo/todo.proto
+protobuf {
+    protoc { artifact = "com.google.protobuf:protoc:${protobufVersion}" }
+
+    plugins {
+        grpc { artifact = "io.grpc:protoc-gen-grpc-java:${grpcVersion}" }
+        'grpc-web' {
+            path = "${buildDir}/protoc-gen-grpc-web-${grpcWebVersion}-${osdetector.classifier}.exe"
+        }
+    }
+    generateProtoTasks {
+        all().each { task ->
+            task.dependsOn(dowloadGrpcWeb)
+            // https://github.com/google/protobuf-gradle-plugin#configure-what-to-generate
+            task.builtins {
+                js {
+                    option 'import_style=commonjs'
+                }
+            }
+            task.plugins {
+                grpc {}
+                'grpc-web' {
+                    // https://github.com/grpc/grpc-web#import-style
+//                    option 'import_style=closure'
+                    option 'import_style=commonjs'
+//                    option 'import_style=commonjs+dts'
+//                    option 'import_style=typescript'
+                    // https://github.com/grpc/grpc-web#wire-format-mode
+//                    option 'mode=grpcwebtext'
+                    option 'mode=grpcweb'
+                    outputSubDir = 'js'
+                }
+            }
+        }
+    }
+}
+
+task dowloadGrpcWeb(type: Download) {
+    src "https://github.com/grpc/grpc-web/releases/download/${grpcWebVersion}/protoc-gen-grpc-web-${grpcWebVersion}-${osdetector.classifier}.exe"
+    dest buildDir
+    overwrite false
+}
+
+sourceSets {
+    main {
+        java {
+            srcDirs = ['src/main/java', 'build/generated/source/proto/main/grpc', 'build/generated/source/proto/main/java']
+        }
+    }
+}
+
+

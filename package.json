@@ -1,0 +1,26 @@
+{
+  "name": "com.zemrow.test.grpc",
+  "version": "1.0.0",
+  "description": "Test gRPC",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "webpack --progress -p",
+    "watch": "webpack --progress --watch"
+  },
+  "author": "Alexandr Polyakov",
+  "license": "ISC",
+  "dependencies": {
+    "jquery": "^3.4.1"
+  },
+  "devDependencies": {
+    "babel-core": "^6.26.3",
+    "babel-loader": "^8.0.6",
+    "babel-preset-env": "^1.7.0",
+    "google-protobuf": "^3.11.2",
+    "grpc": "^1.24.2",
+    "grpc-web": "^1.0.7",
+    "webpack": "^4.41.4",
+    "webpack-cli": "^3.3.10"
+  }
+}

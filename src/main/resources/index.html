@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script src="base.js"></script>
+    <!--<script src="../../../build/generated/source/proto/main/js/testgrpc_grpc_web_pb.js"></script>-->
+    <script type="text/javascript">
+
+require("google-closure-library");
+
+const {SendMessageRequest, SendMessageResponse} = require('../../../build/generated/source/proto/main/js/testgrpc_pb.js');
+const {ChatClient} = require('../../../build/generated/source/proto/main/js/testgrpc_grpc_web_pb.js');
+
+var client = new ChatClient('http://localhost:50051', null, null);
+
+function a1(){
+    var request = new SendMessageRequest();
+    request.setMessage('World');
+    client.sendMessage(request, {}, (err, response) => {
+        console.log(response);
+    });
+}
+
+    </script>
+</head>
+<body>
+<table width="100%" height="100%">
+    <tr>
+        <td colspan="2">
+<textarea rows="50" cols="120">
+
+</textarea>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <input type="text">
+        </td>
+        <td>
+            <input type="button" onclick="a1()" value="send">
+        </td>
+    </tr>
+</table>
+</body>
+</html>

@@ -1,0 +1,13 @@
+# GRADLE
+.gradle
+build/
+
+# IDEA
+.idea
+*.iml
+*.iws
+out/
+
+#NPM
+node_modules/
+package-lock.json

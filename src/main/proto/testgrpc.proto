@@ -1,0 +1,20 @@
+syntax = "proto3";
+
+option java_multiple_files = true;
+option java_package = "com.zemrow.test.grpc";
+option java_outer_classname = "TestGrpcProto";
+option objc_class_prefix = "E";
+
+package testgrpc;
+
+service Chat {
+  rpc sendMessage (SendMessageRequest) returns (SendMessageResponse);
+}
+
+message SendMessageRequest {
+  string message = 1;
+}
+
+message SendMessageResponse {
+  int64 messageId = 1;
+}
